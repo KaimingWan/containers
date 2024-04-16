@@ -49,6 +49,23 @@ kafka_env_vars=(
     KAFKA_CLIENT_USERS
     KAFKA_CLIENT_PASSWORDS
     KAFKA_HEAP_OPTS
+    # AutoMQ add
+    KAFKA_JVM_PERFORMANCE_OPTS
+    LD_PRELOAD
+    AUTOMQ_S3STREAM_STRICT
+    AUTOMQ_ENABLE_LOCAL_CONFIG
+    # AutoMQ server.properties need to be set
+    AUTOMQ_S3_REGION
+    AUTOMQ_BUCKET_NAME
+    AUTOMQ_S3_WAL_PATH
+    AUTOMQ_S3_ENDPOINT
+    AUTOMQ_S3_PATH_STYLE
+    AUTOMQ_METRICS_ENABLE
+    AUTOMQ_METRICS_EXPORTER_TYPE
+    AUTOMQ_METRICS_EXPORTER_PROM_HOST
+    AUTOMQ_METRICS_EXPORTER_PROM_PORT
+    KAFKA_S3_ACCESS_KEY
+    KAFKA_S3_SECRET_KEY
 )
 for env_var in "${kafka_env_vars[@]}"; do
     file_env_var="${env_var}_FILE"
@@ -62,6 +79,26 @@ for env_var in "${kafka_env_vars[@]}"; do
     fi
 done
 unset kafka_env_vars
+
+# AutoMQ
+export KAFKA_JVM_PERFORMANCE_OPTS="${KAFKA_JVM_PERFORMANCE_OPTS:--server -XX:+UseZGC -XX:ZCollectionInterval=5}"
+export AUTOMQ_S3STREAM_STRICT="${AUTOMQ_S3STREAM_STRICT:-false}"
+export AUTOMQ_ENABLE_LOCAL_CONFIG="${AUTOMQ_ENABLE_LOCAL_CONFIG:-true}"
+export LD_PRELOAD="${LD_PRELOAD:-/usr/lib/x86_64-linux-gnu/libjemalloc.so.2}"
+# AutoMQ server.properties needed env
+export AUTOMQ_S3_REGION="${AUTOMQ_S3_REGION:-cn-northwest-1}"
+export AUTOMQ_BUCKET_NAME="${AUTOMQ_BUCKET_NAME:-automq-kafka-data}"
+export AUTOMQ_S3_WAL_PATH="${AUTOMQ_S3_WAL_PATH:-/tmp/kraft-combined-logs/s3wal}"
+export AUTOMQ_S3_ENDPOINT="${AUTOMQ_S3_ENDPOINT:-https://s3.cn-northwest-1.amazonaws.com.cn}"
+export AUTOMQ_S3_PATH_STYLE="${AUTOMQ_S3_PATH_STYLE:-false}"
+export AUTOMQ_METRICS_ENABLE="${AUTOMQ_METRICS_ENABLE:-true}"
+export AUTOMQ_METRICS_EXPORTER_TYPE="${AUTOMQ_METRICS_EXPORTER_TYPE:-prometheus}"
+export AUTOMQ_METRICS_EXPORTER_PROM_HOST="${AUTOMQ_METRICS_EXPORTER_PROM_HOST:-127.0.0.1}"
+export AUTOMQ_METRICS_EXPORTER_PROM_PORT="${AUTOMQ_METRICS_EXPORTER_PROM_PORT:-9090}"
+export KAFKA_S3_ACCESS_KEY="${KAFKA_S3_ACCESS_KEY:-}"
+export KAFKA_S3_SECRET_KEY="${KAFKA_S3_SECRET_KEY:-}"
+
+
 
 # Paths
 export KAFKA_BASE_DIR="${BITNAMI_ROOT_DIR}/kafka"
@@ -112,6 +149,7 @@ export KAFKA_CLIENT_USERS="${KAFKA_CLIENT_USERS:-user}"
 export KAFKA_CLIENT_PASSWORDS="${KAFKA_CLIENT_PASSWORDS:-bitnami}"
 
 # Java settings
-export KAFKA_HEAP_OPTS="${KAFKA_HEAP_OPTS:--Xmx1024m -Xms1024m}"
+# AutoMQ min spec is 1c8g.
+export KAFKA_HEAP_OPTS="${KAFKA_HEAP_OPTS:--Xms5g -Xmx5g -XX:MetaspaceSize=96m}"
 
 # Custom environment variables may be defined below

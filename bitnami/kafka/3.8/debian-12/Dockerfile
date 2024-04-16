@@ -27,6 +27,8 @@ COPY prebuildfs /
 SHELL ["/bin/bash", "-o", "errexit", "-o", "nounset", "-o", "pipefail", "-c"]
 # Install required system packages and dependencies
 RUN install_packages ca-certificates curl procps zlib1g
+## AutoMQ: Install jemalloc
+RUN apt update && apt install -y vim libjemalloc-dev net-tools netcat sysstat && apt clean
 RUN mkdir -p /tmp/bitnami/pkg/cache/ ; cd /tmp/bitnami/pkg/cache/ ; \
     COMPONENTS=( \
       "wait-for-port-1.0.7-11-linux-${OS_ARCH}-debian-12" \
@@ -60,6 +62,14 @@ ENV APP_VERSION="3.7.0" \
     BITNAMI_APP_NAME="kafka" \
     JAVA_HOME="/opt/bitnami/java" \
     PATH="/opt/bitnami/common/bin:/opt/bitnami/java/bin:/opt/bitnami/kafka/bin:$PATH"
+
+# AutoMQ related env. Env defined in kafka-env.sh
+ENV DEBIAN_FRONTEND=noninteractive
+ENV KAFKA_HEAP_OPTS '-Xms2g -Xmx2g -XX:MetaspaceSize=96m -XX:MaxDirectMemorySize=4G'
+ENV KAFKA_JVM_PERFORMANCE_OPTS '-server -XX:+UseZGC -XX:ZCollectionInterval=5'
+ENV AUTOMQ_S3STREAM_STRICT false
+ENV AUTOMQ_ENABLE_LOCAL_CONFIG true
+ENV LD_PRELOAD /usr/lib/x86_64-linux-gnu/libjemalloc.so.2
 
 EXPOSE 9092
 

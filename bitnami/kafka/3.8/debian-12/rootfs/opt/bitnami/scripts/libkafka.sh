@@ -905,6 +905,34 @@ kafka_kraft_quorum_voters_changed(){
     fi
 }
 
+
+########################
+# Initialize AutoMQ Configuration
+# Globals:
+#   KAFKA_*
+# Arguments:
+#   None
+# Returns:
+#   None
+#########################
+automq_initialize() {
+  info "Initializing AutoMQ..."
+  kafka_server_conf_set s3.region "${AUTOMQ_S3_REGION}"
+  kafka_server_conf_set s3.bucket "${AUTOMQ_BUCKET_NAME}"
+  kafka_server_conf_set s3.wal.path "${AUTOMQ_S3_WAL_PATH}"
+  kafka_server_conf_set s3.endpoint "${AUTOMQ_S3_ENDPOINT}"
+  kafka_server_conf_set s3.path.style "${AUTOMQ_S3_PATH_STYLE}"
+
+  kafka_server_conf_set s3.telemetry.metrics.enable "${AUTOMQ_METRICS_ENABLE}"
+  kafka_server_conf_set s3.telemetry.metrics.exporter.type "${AUTOMQ_METRICS_EXPORTER_TYPE}"
+  kafka_server_conf_set s3.metrics.exporter.prom.host "${AUTOMQ_METRICS_EXPORTER_PROM_HOST}"
+  kafka_server_conf_set s3.metrics.exporter.prom.port "${AUTOMQ_METRICS_EXPORTER_PROM_PORT}"
+
+
+
+}
+
+
 ########################
 # Initialize Kafka
 # Globals:
