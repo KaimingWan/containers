@@ -84,7 +84,7 @@ unset kafka_env_vars
 export KAFKA_JVM_PERFORMANCE_OPTS="${KAFKA_JVM_PERFORMANCE_OPTS:--server -XX:+UseZGC -XX:ZCollectionInterval=5}"
 export AUTOMQ_S3STREAM_STRICT="${AUTOMQ_S3STREAM_STRICT:-false}"
 export AUTOMQ_ENABLE_LOCAL_CONFIG="${AUTOMQ_ENABLE_LOCAL_CONFIG:-true}"
-export LD_PRELOAD="${LD_PRELOAD:-/usr/lib/x86_64-linux-gnu/libjemalloc.so.2}"
+#export LD_PRELOAD="${LD_PRELOAD:-/usr/lib/x86_64-linux-gnu/libjemalloc.so.2}"
 # AutoMQ server.properties needed env
 export AUTOMQ_S3_REGION="${AUTOMQ_S3_REGION:-cn-northwest-1}"
 export AUTOMQ_BUCKET_NAME="${AUTOMQ_BUCKET_NAME:-automq-kafka-data}"

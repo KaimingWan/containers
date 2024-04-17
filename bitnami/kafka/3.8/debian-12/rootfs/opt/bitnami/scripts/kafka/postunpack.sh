@@ -20,7 +20,8 @@ set -o pipefail
 # Temporary solution until kafka tarball places server.properties into config
 if [[ -d "${KAFKA_BASE_DIR}/configtmp" ]]; then
     mv "${KAFKA_BASE_DIR}/configtmp"/* "$KAFKA_CONF_DIR"
-    rmdir "${KAFKA_BASE_DIR}/configtmp"
+    # Has hidden file .server.properties. Do not know where it comes from. Just delete the dir.
+    rm -rf "${KAFKA_BASE_DIR}/configtmp"
 fi
 [[ -d "${KAFKA_BASE_DIR}/conf" ]] && rmdir "${KAFKA_BASE_DIR}/conf"
 
