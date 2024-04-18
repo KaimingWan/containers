@@ -117,6 +117,11 @@ docker run -d --name kafka-server --hostname kafka-server \
     -e KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT \
     -e KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka-server:9093 \
     -e KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER \
+    -e AUTOMQ_S3_REGION=cn-hangzhou \
+    -e AUTOMQ_BUCKET_NAME=wanshao-tmp-bucket \
+    -e AUTOMQ_S3_ENDPOINT=oss-cn-hangzhou.aliyuncs.com \
+    -e KAFKA_S3_ACCESS_KEY=xxx \
+    -e KAFKA_S3_SECRET_KEY=xxx \
     bitnami/kafka:latest
 ```
 

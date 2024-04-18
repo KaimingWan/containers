@@ -4,55 +4,6 @@
 
 # shellcheck disable=SC1091
 
-## AutoMQ: setting AutoMQ configuration by environment
-setup_value() {
-  key=$1
-  value=$2
-  file=$3
-  # replace special characters
-  value=${value//&/\\&}
-  value=${value//#//\\#/}
-  echo "setup_value: key=${key}, value=${value}, file=${file}"
-  sed -i "s|^${key}=.*$|${key}=${value}|" "${file}"
-}
-
-turn_on_auto_balancer() {
-    role=$1
-    file_name=$2
-    auto_balancer_setting_for_all "${file_name}"
-    if [[ "${role}" == "broker" ]]; then
-        auto_balancer_setting_for_broker_only "${file_name}"
-    elif [[ "${role}" == "controller" ]]; then
-        auto_balancer_setting_for_controller_only "${file_name}"
-    elif [[ "${role}" == "server" ]]; then
-        auto_balancer_setting_for_controller_only "${file_name}"
-        auto_balancer_setting_for_broker_only "${file_name}"
-    fi
-}
-
-
-for role in "broker" "controller" "server"; do
-      setup_value "node.id" "${AUTOMQ_NODE_ID}" "${kafka_dir}/config/kraft/${role}.properties"
-      setup_value "controller.quorum.voters" "${quorum_voters}" "${kafka_dir}/config/kraft/${role}.properties"
-      setup_value "s3.region" "${AUTOMQ_REGION}" "${kafka_dir}/config/kraft/${role}.properties"
-      setup_value "s3.bucket" "${AUTOMQ_BUCKET_NAME}" "${kafka_dir}/config/kraft/${role}.properties"
-      setup_value "log.dirs" "${AUTOMQ_LOG_DIRS}/kraft-${role}-logs" "${kafka_dir}/config/kraft/${role}.properties"
-      setup_value "s3.wal.path" "${AUTOMQ_WAL_PATH}/wal" "${kafka_dir}/config/kraft/${role}.properties"
-      setup_value "s3.endpoint" "${AUTOMQ_ENDPOINT}" "${kafka_dir}/config/kraft/${role}.properties"
-      add_or_setup_value "s3.path.style" "${AUTOMQ_PATH_STYLE}" "${kafka_dir}/config/kraft/${role}.properties"
-      # turn on auto_balancer
-      turn_on_auto_balancer "${role}" "${kafka_dir}/config/kraft/${role}.properties"
-
-      # setup metrics exporter
-      add_or_setup_value "s3.telemetry.metrics.enable" "true" "${kafka_dir}/config/kraft/${role}.properties"
-      add_or_setup_value "s3.telemetry.metrics.level" "DEBUG" "${kafka_dir}/config/kraft/${role}.properties"
-      add_or_setup_value "s3.telemetry.metrics.exporter.type" "otlp" "${kafka_dir}/config/kraft/${role}.properties"
-      add_or_setup_value "s3.telemetry.exporter.otlp.endpoint" "http://metrics.hellocorp.site" "${kafka_dir}/config/kraft/${role}.properties"
-      add_or_setup_value "s3.telemetry.exporter.report.interval.ms" "10000" "${kafka_dir}/config/kraft/${role}.properties"
-done
-
-
-
 set -o errexit
 set -o nounset
 set -o pipefail
@@ -88,7 +39,7 @@ done
 # Kafka validation, skipped if server.properties was mounted at either $KAFKA_MOUNTED_CONF_DIR or $KAFKA_CONF_DIR
 [[ ! -f "${KAFKA_MOUNTED_CONF_DIR}/server.properties" && ! -f "$KAFKA_CONF_FILE" ]] && kafka_validate
 # Kafka initialization, skipped if server.properties was mounted at $KAFKA_CONF_DIR
-[[ ! -f "$KAFKA_CONF_FILE" ]] && kafka_initialize
+[[ ! -f "$KAFKA_CONF_FILE" ]] && kafka_initialize && automq_initialize
 
 # Initialise KRaft metadata storage if process.roles configured
 if grep -q "^process.roles=" "$KAFKA_CONF_FILE" && ! is_boolean_yes "$KAFKA_SKIP_KRAFT_STORAGE_INIT" ; then

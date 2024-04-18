@@ -928,8 +928,9 @@ automq_initialize() {
   kafka_server_conf_set s3.metrics.exporter.prom.host "${AUTOMQ_METRICS_EXPORTER_PROM_HOST}"
   kafka_server_conf_set s3.metrics.exporter.prom.port "${AUTOMQ_METRICS_EXPORTER_PROM_PORT}"
 
-
-
+  ## copy to override the default
+  cp $KAFKA_CONF_FILE $KAFKA_KRAFT_CONF_FILE
+  true
 }
 
 

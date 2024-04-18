@@ -105,6 +105,8 @@ export KAFKA_BASE_DIR="${BITNAMI_ROOT_DIR}/kafka"
 export KAFKA_VOLUME_DIR="/bitnami/kafka"
 export KAFKA_DATA_DIR="${KAFKA_VOLUME_DIR}/data"
 export KAFKA_CONF_DIR="${KAFKA_BASE_DIR}/config"
+export KAFKA_KRAFT_CONF_DIR="${KAFKA_CONF_DIR}/kraft"
+export KAFKA_KRAFT_CONF_FILE="${KAFKA_KRAFT_CONF_DIR}/server.properties"
 export KAFKA_CONF_FILE="${KAFKA_CONF_DIR}/server.properties"
 export KAFKA_MOUNTED_CONF_DIR="${KAFKA_MOUNTED_CONF_DIR:-${KAFKA_VOLUME_DIR}/config}"
 export KAFKA_CERTS_DIR="${KAFKA_CONF_DIR}/certs"
@@ -112,6 +114,11 @@ export KAFKA_INITSCRIPTS_DIR="/docker-entrypoint-initdb.d"
 export KAFKA_LOG_DIR="${KAFKA_BASE_DIR}/logs"
 export KAFKA_HOME="$KAFKA_BASE_DIR"
 export PATH="${KAFKA_BASE_DIR}/bin:${BITNAMI_ROOT_DIR}/java/bin:${PATH}"
+
+## debug
+echo "KAFKA_BASE_DIR: $KAFKA_BASE_DIR"
+echo "KAFKA_CONF_DIR: $KAFKA_CONF_DIR"
+echo "KAFKA_CONF_FILE: $KAFKA_CONF_FILE"
 
 # System users (when running with a privileged user)
 export KAFKA_DAEMON_USER="kafka"
